@@ -4,10 +4,10 @@ Simple IPython magics for experimenting with locally run generative AI text and 
 
 Magics built around third party Python packages offering Python APIs to generative models:
 
-- [`llm`](https://github.com/simonw/llm): command line and Python API for text models
-- [`sdkit`](https://github.com/easydiffusion/sdkit): Pyhton API for Locally run Stable Diffusion
+- [`llm`](https://github.com/simonw/llm): command line and Python API for `gpt4all` text models
+- [`sdkit`](https://github.com/easydiffusion/sdkit): Python API for locally run Stable Diffusion
 
-Only tested on Mac M2.
+Only tested on Mac M2. Dependencies may vary for other platforms (check original package repos for details; please post an issue with differing dependency requirements for other platforms etc.)
 
 `pip install git+https://github.com/innovationOUtside/ouseful-ai-magics.git`
 
