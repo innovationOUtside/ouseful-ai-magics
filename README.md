@@ -47,7 +47,7 @@ You can connect to an `llm` model as:
 `%llm_connect llama-2-7b-chat` (default)
 `%llm_connect ggml-replit-code-v1-3b`
 
-If the model is not available it will be automatically downloaded.
+If the model is not available it will be automatically downloaded. You can run the command line command `llm models list` to list the available models.
 
 Use the `sdkit` package to generate Stable Diffusion models:
 
