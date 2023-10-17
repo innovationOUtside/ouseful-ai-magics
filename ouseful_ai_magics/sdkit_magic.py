@@ -21,16 +21,16 @@ log.setLevel(logging.CRITICAL)
 loggingd.set_verbosity_error()
 
 @magics_class
-class SDMagics(Magics):
+class SDKitMagics(Magics):
     "Stable Diffusion magics that holds connection"
 
     def __init__(self, shell):
-        super(SDMagics, self).__init__(shell)
+        super(SDKitMagics, self).__init__(shell)
         self.context = None
         self.download_path = ".cache/sdkit/"
         self.model_path = '.cache/sdkit/stable-diffusion/v1-5-pruned.ckpt'
 
-    def _sd_connect(self, model=None):
+    def _sdkit_connect(self, model=None):
         # TO DO  - model not yet handled  - always use default
         context = sdkit.Context()
 
@@ -48,7 +48,7 @@ class SDMagics(Magics):
         
 
     @line_magic
-    def sd_download_model(self, line):
+    def sdkit_download_model(self, line):
         from sdkit.models import download_model
         #The following ckpt file is a 7.17GB download
         download_model("stable-diffusion", "1.5-pruned",
@@ -56,15 +56,15 @@ class SDMagics(Magics):
                         download_config_if_available=False)
     
     @line_magic
-    def sd_connect(self, line):
+    def sdkit_connect(self, line):
         "Set up model connection"
-        self._sd_connect(line)
+        self._sdkit_connect(line)
 
     @line_cell_magic
-    def sd(self, line, cell=None):
+    def sdkit(self, line, cell=None):
         "Stable Diffusion cell magic"
         if not self.context:
-            self._sd_connect()
+            self._sdkit_connect()
         if cell:
             images = generate_images(self.context, prompt=cell, seed=42, width=512, height=512)
         elif line:
@@ -72,5 +72,5 @@ class SDMagics(Magics):
         return images[0]
         
 def load_ipython_extension(ipython):
-    magics = SDMagics(ipython)
+    magics = SDKitMagics(ipython)
     ipython.register_magics(magics)

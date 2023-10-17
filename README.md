@@ -51,11 +51,11 @@ If the model is not available it will be automatically downloaded. You can run t
 
 Use the `sdkit` package to generate Stable Diffusion models:
 
-- download a model: `%sd_download_model` (currently fixed default is `v1-5-pruned`)
-- line and cell magic `%sd A fairy tale cottage` and:
+- download a model: `%sdkit_download_model` (currently fixed default is `v1-5-pruned`)
+- line and cell magic `%sdkit A fairy tale cottage` and:
 
 ```text
-%%sd
+%%sdkit
 A fairy tale castle.
 A dragon flies overhead.
 ```
