@@ -156,7 +156,7 @@ The following option switches are available in the `%%sdkit` cell magic:
 We can also manipulate what is returned:
 
 - `--file_path / -f`, save as file (give filename, eg `generated_img.png`, `path/to/generated_img.jpg` )
-- `--return_object / r`, default=False, return image object(s) (default: False).
+- `--return_object / -r`, default=False, return image object(s) (default: False).
 
 Show status of loaded model:
 
