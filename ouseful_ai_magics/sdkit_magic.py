@@ -12,6 +12,11 @@ import sdkit
 from sdkit.models import load_model
 from sdkit.generate import generate_images
 
+from urllib.parse import urlparse
+from PIL import Image
+import requests
+import io
+
 from sdkit.utils import log
 import logging
 from diffusers import logging as loggingd
@@ -127,6 +132,7 @@ class SDKitMagics(Magics):
     @argument('--num_inference_steps', '-i', type=int, default=25, help='Number of inference steps (default: 25).')
     @argument('--guidance_scale', '-g', type=float, default=7.5, help='Guidance scale (default: 7.5).')
     @argument('--init_image', '-I', default=None, help='Initial image (string (path to file), or PIL.Image or a base64-encoded string).')
+    @argument('--keep_size_same', '-k', default=True, help='If --init-image is URL, keep size (default: True)).')
     @argument('--prompt_strength', '-p', type=float, default=0.8, help='Prompt strength (default: 0.8).')
     @argument('--file_path', '-f', default='', help='Save as file (give filename, eg "generated_img.png".')
     @argument('--return_object', '-r', default=False, help='Return image object(s) (default: False).')
@@ -135,13 +141,25 @@ class SDKitMagics(Magics):
         args = parse_argstring(self.sdkit, line)
         if not self.context:
             self._sdkit_connect()
+        
+        # Try to get the image path; if it's a URL, load the image
+        _init_image = args.init_image
+        if _init_image:
+            _init_image = _init_image.strip('"').strip("'")
+            if bool(urlparse(_init_image).netloc):
+                print(f"Loading image from web location ({_init_image})...")
+                r = requests.get(_init_image)
+                _init_image = Image.open(io.BytesIO(r.content))
+                if args.keep_size_same:
+                    args.width, args.height = _init_image.size
+
         images = generate_images(self.context, prompt=cell,
                                  negative_prompt=args.negative_prompt,
                                  seed=args.seed, width=args.width, height=args.height,
                                  num_outputs = args.num_outputs, # TO DO - multiple images not working?
                                  num_inference_steps = args.num_inference_steps,
                                  guidance_scale=args.guidance_scale,
-                                 init_image=args.init_image, # TO DO if this is a web URL, grab image as PIL image
+                                 init_image=_init_image,
                                  prompt_strength=args.prompt_strength)
         if args.file_path:
             # If the path is in a directory, make sure the directory exists
