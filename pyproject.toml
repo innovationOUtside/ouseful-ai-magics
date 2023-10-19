@@ -1,6 +1,6 @@
 [project]
 name = "ouseful-ai-magics"
-version = "0.0.3"
+version = "0.0.4"
 description = "Simple magics for running generative models in Jupyter notebooks."
 readme = "README.md"
 authors = [{name = "Tony Hirst"}]

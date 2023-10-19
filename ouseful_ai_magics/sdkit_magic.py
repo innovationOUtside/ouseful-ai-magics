@@ -29,11 +29,23 @@ class SDKitMagics(Magics):
         self.context = None
         self.download_path = ".cache/sdkit/"
         self.model_path = '.cache/sdkit/stable-diffusion/v1-5-pruned.ckpt'
+        self.typ = "stable-diffusion"
+        self.version = "1.5-pruned"
+        #2.1-512-ema-pruned
 
-    def _sdkit_connect(self, model=None):
+    def _create_model_path(self):
+        #HACKFIX
+        _version = self.version
+        if _version=="2.1-512-ema-pruned":
+            _version = "2-1_512-ema-pruned"
+        return f"{self.download_path}{self.typ}/v{_version}.ckpt"
+
+    def _sdkit_connect(self):
         # TO DO  - model not yet handled  - always use default
         context = sdkit.Context()
 
+        self.model_path = self._create_model_path()
+    
         # No CUDA on Mac
         #%env CUDA_VISIBLE_DEVICES=""
         # Need to find a way to reliably default to cuda if we can
@@ -50,28 +62,53 @@ class SDKitMagics(Magics):
             self._download_model()
             load_model(context, 'stable-diffusion')
         self.context = context
+        self._about()
 
-    def _download_model(self, typ="stable-diffusion", version="1.5-pruned"):
+    def _download_model(self):
         from sdkit.models import download_model
         #The default ckpt file is a 7.17GB download
-        download_model(typ, version,
+        download_model(self.typ, self.version,
                        download_base_dir=self.download_path,
                        download_config_if_available=False)
-    
+        
+    def _about(self):
+        context = self.context == None
+        model_path = self.model_path
+        typ = self.typ
+        version = self.version
+        display(f"Model type: {typ}; model version: {version}; path: {model_path}; context loaded: {context}")
+
     @line_magic
+    @magic_arguments()
+    @argument('--type', '-t', default='stable-diffusion', help='Model type (default: stable-diffusion).')
+    @argument('--version', '-v', default='1.5-pruned', help='Model version (default: 1.5-pruned).')
     def sdkit_download_model(self, line):
         """Download model magic."""
+        args = parse_argstring(self.sdkit_download_model, line)
+        self.typ = args.type
+        self.version = args.version
         self._download_model()
     
     @line_magic
+    @magic_arguments()
+    @argument('--type', '-t', default='stable-diffusion', help='Model type (default: stable-diffusion).')
+    @argument('--version', '-v', default='1.5-pruned', help='Model version (default: 1.5-pruned).')
     def sdkit_connect(self, line):
         "Set up model connection"
-        self._sdkit_connect(line)
+        args = parse_argstring(self.sdkit_connect, line)
+        self.typ = args.type
+        self.version = args.version
+        self._sdkit_connect()
 
     @line_magic
     def sdkit_clear(self, line):
         "Clear down model connection"
-        self.context = None 
+        self.context = None
+
+    @line_magic
+    def sdkit_about(self, line):
+        "Info about the connection"
+        self._about()
 
     @cell_magic
     @magic_arguments()

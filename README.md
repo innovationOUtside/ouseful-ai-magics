@@ -126,8 +126,8 @@ Clear a conversation:
 
 Use the `sdkit` package to generate Stable Diffusion models:
 
-- download a model: `%sdkit_download_model` (currently only one model is available (*Stable Diffusion `v1-5-pruned`*) and is a hardwired default)
-- connect a previously downloaded model: `%sdkit_connect`
+- download a model: `%sdkit_download_model` (default is *stable-diffusion `v1-5-pruned`*); optional arguments `-t / --type` (e.g. `stable-diffusion` (default)), `-v / --version` (eg `1-5-pruned` (default), `2.1-512-ema-pruned`)
+- connect to a model: `%sdkit_connect`; same options as `sdkit_download_model`; if the model has not been downloaded previously, an attempt will be made to download it;
 - clear down a model: `%sdkit_clear`
 - generate image: `%%sdkit` cell block magic; (this will autoconnect the default model if it is not already connected); see examples below for additional switches.
 
@@ -143,7 +143,7 @@ A dragon flies overhead.
 
 The following option switches are available in the `%%sdkit` cell magic:
 
-- `--negative_prompt / -n`, default='', negative prompt.
+- `--negative_prompt / -n`, default='', negative prompt; (not supported for Stable Diffusion 1.5).
 - `--height / -h`, type=int, default=512, height of image (must be divisible by 8; default: 512).
 - `--width / -w`, type=int, default=512, width of image (must be divisible by 8; default: 512).
 - `--seed / -s`,` type=int, default=42, random seed (default: 42).
@@ -151,6 +151,22 @@ The following option switches are available in the `%%sdkit` cell magic:
 - `--guidance_scale / -g`, type=float, default=7.5, guidance scale (default: 7.5).
 - `--init_image / -I`, default=None, initial image (string (path to file), or PIL.Image or a base64-encoded string).
 - `--prompt_strength / -p`, type=float, default=0.8, prompt strength (default: 0.8).
+
+Show status of loaded model:
+
+`%sdkit_about`
+
+Deallocate the model:
+
+`sdkit_clear`
+
+Example models:
+
+- `stable-diffusion, 1-5-pruned` (default)
+- `stable-diffusion, 2.1-512-ema-pruned`
+
+For a full list, see https://github.com/easydiffusion/sdkit/tree/main/sdkit/models/models_db
+
 
 ## BUILD and INSTALL
 
