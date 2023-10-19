@@ -1,5 +1,7 @@
 # ouseful-ai-magics
 
+*The __quickest__ way of getting started with locally run LLMs and Stable Diffusion image generation models in Juoyter notebooks...*
+
 Simple IPython magics for experimenting with locally run generative AI text and image models.
 
 Magics built around third party Python packages offering Python APIs to generative models:
