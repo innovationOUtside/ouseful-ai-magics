@@ -6,6 +6,8 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 from IPython.core.magic import (Magics, magics_class, line_magic,
                                 cell_magic, line_cell_magic)
 from IPython.core.magic_arguments import argument, magic_arguments, parse_argstring
+import os
+import pathlib
 import sdkit
 from sdkit.models import load_model
 from sdkit.generate import generate_images
@@ -34,16 +36,25 @@ class SDKitMagics(Magics):
         #2.1-512-ema-pruned
 
     def _create_model_path(self):
-        #HACKFIX
+        #HACKFIX - maybe do some clever pattern mathcing here?
         _version = self.version
-        if _version=="2.1-512-ema-pruned":
+        if _version=="1.5-pruned":
+            _version = "1-5-pruned"
+        elif _version=="2.1-512-ema-pruned":
             _version = "2-1_512-ema-pruned"
         return f"{self.download_path}{self.typ}/v{_version}.ckpt"
 
+    def _download_model(self):
+        from sdkit.models import download_model
+        print(f"Attempting to download model ({self.typ}: {self.version})...")
+        #The default ckpt file is a 7.17GB download
+        download_model(self.typ, self.version,
+                       download_base_dir=self.download_path,
+                       download_config_if_available=False)
+        
     def _sdkit_connect(self):
         # TO DO  - model not yet handled  - always use default
         context = sdkit.Context()
-
         self.model_path = self._create_model_path()
     
         # No CUDA on Mac
@@ -56,27 +67,23 @@ class SDKitMagics(Magics):
         # set the path to the model file on the disk (.ckpt or .safetensors file)
         context.model_paths['stable-diffusion'] = self.model_path
         # TO DO: find a better way of checking we have a downloaded model...
+        print(f"Loading context (\"{self.model_path}\")...")
         try:
             load_model(context, 'stable-diffusion')
         except:
             self._download_model()
+            print("Trying to load context again (\"{self.model_path}\")...")
             load_model(context, 'stable-diffusion')
         self.context = context
         self._about()
-
-    def _download_model(self):
-        from sdkit.models import download_model
-        #The default ckpt file is a 7.17GB download
-        download_model(self.typ, self.version,
-                       download_base_dir=self.download_path,
-                       download_config_if_available=False)
         
     def _about(self):
-        context = self.context == None
+        context = self.context is None
+        context = "unloaded" if context else "loaded"
         model_path = self.model_path
         typ = self.typ
         version = self.version
-        display(f"Model type: {typ}; model version: {version}; path: {model_path}; context loaded: {context}")
+        print(f"Model type: {typ}; model version: {version}; path: {model_path}; context: {context}")
 
     @line_magic
     @magic_arguments()
@@ -121,6 +128,8 @@ class SDKitMagics(Magics):
     @argument('--guidance_scale', '-g', type=float, default=7.5, help='Guidance scale (default: 7.5).')
     @argument('--init_image', '-I', default=None, help='Initial image (string (path to file), or PIL.Image or a base64-encoded string).')
     @argument('--prompt_strength', '-p', type=float, default=0.8, help='Prompt strength (default: 0.8).')
+    @argument('--file_path', '-f', default='', help='Save as file (give filename, eg "generated_img.png".')
+    @argument('--return_object', '-r', default=False, help='Return image object(s) (default: False).')
     def sdkit(self, line, cell):
         "Stable Diffusion cell magic"
         args = parse_argstring(self.sdkit, line)
@@ -134,6 +143,17 @@ class SDKitMagics(Magics):
                                  guidance_scale=args.guidance_scale,
                                  init_image=args.init_image, # TO DO if this is a web URL, grab image as PIL image
                                  prompt_strength=args.prompt_strength)
+        if args.file_path:
+            # If the path is in a directory, make sure the directory exists
+            # Strip any quotes...
+            file_path = args.file_path.strip('"').strip("'")
+            dirpath = os.path.dirname(file_path)
+            if dirpath:
+                os.makedirs(dirpath, exist_ok=True)
+            images[0].save(file_path, pathlib.Path(file_path).suffix.strip(".").upper())
+            print(f"Image saved to {file_path}")
+        if args.return_object:
+            return images
         return images[0] #TO DO fix when we can generate multiple images
 
 def load_ipython_extension(ipython):

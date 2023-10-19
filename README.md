@@ -152,6 +152,11 @@ The following option switches are available in the `%%sdkit` cell magic:
 - `--init_image / -I`, default=None, initial image (string (path to file), or PIL.Image or a base64-encoded string).
 - `--prompt_strength / -p`, type=float, default=0.8, prompt strength (default: 0.8).
 
+We can also manipulate what is returned:
+
+- `--file_path / -f`, save as file (give filename, eg `generated_img.png`, `path/to/generated_img.jpg` )
+- `--return_object / r`, default=False, return image object(s) (default: False).
+
 Show status of loaded model:
 
 `%sdkit_about`
@@ -162,7 +167,7 @@ Deallocate the model:
 
 Example models:
 
-- `stable-diffusion, 1-5-pruned` (default)
+- `stable-diffusion, 1.5-pruned` (default)
 - `stable-diffusion, 2.1-512-ema-pruned`
 
 For a full list, see https://github.com/easydiffusion/sdkit/tree/main/sdkit/models/models_db
