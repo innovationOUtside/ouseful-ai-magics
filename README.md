@@ -112,15 +112,15 @@ If any code is returned, also provide an explanation for how the code works.
 """
 ```
 
-### Resetting models and conversations
-
-Deallocate the model:
-
-`%llm_clear`
+### Resetting conversations and clearing models
 
 Clear a conversation:
 
 `%llm_clear_conversation`
+
+Deallocate the model:
+
+`%llm_clear`
 
 ## Image generation
 
