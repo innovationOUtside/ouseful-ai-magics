@@ -91,6 +91,7 @@ Start a new conversation with `-n/--new`:
 
 ```python
 %%llm_conversation -n True -s "Your name is Ozzy"
+What is your name?
 ```
 
 Clear a conversation:
