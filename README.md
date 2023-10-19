@@ -158,7 +158,7 @@ Show status of loaded model:
 
 Deallocate the model:
 
-`sdkit_clear`
+`%sdkit_clear`
 
 Example models:
 
@@ -166,7 +166,6 @@ Example models:
 - `stable-diffusion, 2.1-512-ema-pruned`
 
 For a full list, see https://github.com/easydiffusion/sdkit/tree/main/sdkit/models/models_db
-
 
 ## BUILD and INSTALL
 
