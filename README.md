@@ -9,6 +9,8 @@ Magics built around third party Python packages offering Python APIs to generati
 
 Only tested on Mac M2. Dependencies may vary for other platforms (check original package repos for details; please post an issue with differing dependency requirements for other platforms etc.)
 
+## Installation
+
 `pip install git+https://github.com/innovationOUtside/ouseful-ai-magics.git`
 
 or
@@ -19,8 +21,8 @@ or
 
 Load the magics:
 
-`%load_ext ouseful_ai_magics`
-`%reload_ext ouseful_ai_magics`
+- `%load_ext ouseful_ai_magics`
+- `%reload_ext ouseful_ai_magics`
 
 ## Text generation
 
@@ -67,7 +69,7 @@ You see everything as a joke and have a thick welsh accent."""
 What is the weather like?
 ```
 
-## Conversations
+### Conversations
 
 Conversations carry over previous prompts and responses.
 
@@ -88,14 +90,14 @@ What did you say your name was?
 Start a new conversation with `-n/--new`:
 
 ```python
-%%llm_conversation  -n True -s "Your name is Ozzy"
+%%llm_conversation -n True -s "Your name is Ozzy"
 ```
 
 Clear a conversation:
 
 `%llm_clear_conversation`
 
-## Working with code
+### Working with code
 
 *This is WIP en route to seeing if we can get code into a code cell etc.*
 
@@ -109,7 +111,6 @@ Please display any code in triple backticked fence posts with a python label.
 If any code is returned, also provide an explanation for how the code works.
 """
 ```
-
 
 ### Resetting models and conversations
 
@@ -140,7 +141,7 @@ A fairy tale castle.
 A dragon flies overhead.
 ```
 
-The following option switiches are available in the `%%sdkit` cell magic:
+The following option switches are available in the `%%sdkit` cell magic:
 
 - `--negative_prompt / -n`, default='', negative prompt.
 - `--height / -h`, type=int, default=512, height of image (must be divisible by 8; default: 512).
