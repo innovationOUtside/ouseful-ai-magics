@@ -132,7 +132,7 @@ Use the `sdkit` package to generate Stable Diffusion models:
 - clear down a model: `%sdkit_clear`
 - generate image: `%%sdkit` cell block magic; (this will autoconnect the default model if it is not already connected); see examples below for additional switches.
 
-## `%%sdkit` image generation
+### `%%sdkit` image generation
 
 Example of using the `%%sdkit` cell magic:
 
