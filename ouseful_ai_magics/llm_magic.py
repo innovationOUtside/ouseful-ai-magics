@@ -12,7 +12,7 @@ class LLMMagics(Magics):
     def __init__(self, shell):
         super(LLMMagics, self).__init__(shell)
         self.model = None
-        self.model_name = "llama-2-7b-chat"
+        self.model_name = "mistral-7b-instruct-v0"
         self.post_qualify = "Please display any code in triple backticked fence posts with a python label. \
             If any code is returned, also provide an explanation for how the code works. \
             "

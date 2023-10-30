@@ -6,7 +6,7 @@ Simple IPython magics for experimenting with locally run generative AI text and 
 
 Magics built around third party Python packages offering Python APIs to generative models:
 
-- [`llm`](https://github.com/simonw/llm): command line and Python API for `gpt4all` text models
+- [`llm`](https://github.com/simonw/llm): command line and Python API for `gpt4all` `.gguf` format text models)
 - [`sdkit`](https://github.com/easydiffusion/sdkit): Python API for locally run Stable Diffusion
 
 Only tested on Mac M2. Dependencies may vary for other platforms (check original package repos for details; please post an issue with differing dependency requirements for other platforms etc.)
@@ -19,6 +19,13 @@ or
 
 `pip install https://github.com/innovationOUtside/ouseful-ai-magics/archive/refs/heads/main.zip`
 
+For best performance, you should also regularly check that you are using the nmost recent versions of `llm` and `gpt4all`:
+
+```bash
+pip install --upgrade llm gpt4all
+llm install -U llm-gpt4all
+```
+
 ## Getting Started
 
 Load the magics:
@@ -26,14 +33,63 @@ Load the magics:
 - `%load_ext ouseful_ai_magics`
 - `%reload_ext ouseful_ai_magics`
 
+## Finding and Downloading Models
+
+The `gpt4all` package maintainers publish a list of recommended models available for use with the *GPT4All* application; run the command line command __`llm models list`__ to list the available models.
+
+## Additional models
+
+A wide range of additional models can be accessed by installing the appropriate [`llm` plugin](https://llm.datasette.io/en/stable/plugins/directory.html#plugin-directory).
+
+### `llm-llama-cpp` plugin
+
+The [`llm-llama-cpp`](https://github.com/simonw/llm-llama-cpp) plugin supports models that can be downloaded from HuggingFace.
+
+Install (or update) the plugin with: `llm install -U llm-llama-cpp`. Note there is an additional dependency on`llm install llama-cpp-python` (or on Mac M1/M2: `CMAKE_ARGS="-DLLAMA_METAL=on" FORCE_CMAKE=1 llm install llama-cpp-python`).
+
+Download a model and provide an alis from the command line.
+
+For models that support the *Llama 2 Chat* prompt format, use the `--llama2-chat` switch in a command of the form:
+
+```bash
+llm llama-cpp download-model \
+  https://huggingface.co/TheBloke/Llama-2-7b-Chat-GGUF/resolve/main/llama-2-7b-chat.Q6_K.gguf \
+  --alias llama2-chat --alias l2c --llama2-chat
+```
+
+Connect to the model using the alias, for example: `%llm_connect l2c`.
+
+### Manually downloading additional models from HuggingFace
+
+You can manually download additional models from Hugging Face using the `huggingface-cli` command line tool shipped as part of the [`huggingface_hub`](https://github.com/huggingface/huggingface_hub) Python package:
+
+```bash
+#pip install --upgrade huggingface_hub
+# huggingface-cli download HUGGINGFACE_REPO MODELNAME --local-dir DOWNLOAD_PATH
+# Examples:
+huggingface-cli download TheBloke/Llama-2-7b-Chat-GGUF llama-2-7b-chat.Q4_K_M.gguf --local-dir ~/.cache/gpt4all --local-dir-use-symlinks False
+
+huggingface-cli download TheBloke/CodeLlama-7B-Python-GGUF codellama-7b-python.Q4_K_M.gguf --local-dir ~/.cache/gpt4all --local-dir-use-symlinks False
+
+huggingface-cli download TheBloke/WizardCoder-Python-7B-V1.0-GGUF wizardcoder-python-7b-v1.0.Q4_K_M.gguf --local-dir ~/.cache/gpt4all --local-dir-use-symlinks False
+```
+
+*If the `--local-dir-use-symlinks True` flag is set (default), HuggingFace models are dowmnloaded to model specific directories on the path `~/.cache/huggingface/hub/`.*
+
+Register the model with `llm` using a command-line command of the form:
+
+`llm llama-cpp add-model ~/.cache/gpt4all/llama-2-7b-chat.Q4_K_M.gguf --alias llama2chat --llama2-chat`
+
+Connect to the model using the alias, for example: `%llm_connect llama2chat`.
+
 ## Text generation
 
-You can connect to an `llm` model as:
+You can connect to an `llm` model that is available that is identified via the `llm models list` command as:
 
-- `%llm_connect llama-2-7b-chat` (default)
-- `%llm_connect ggml-replit-code-v1-3b`
+- `%llm_connect mistral-7b-instruct-v0` (default)
+- `%llm_connect mistral-7b-openorca`
 
-If the model is not available it will be automatically downloaded. *Run the command line command `llm models list` to list the available models.*
+If the model is not available it will be automatically downloaded.
 
 Display current model name and status:
 
@@ -134,6 +190,8 @@ Use the `sdkit` package to generate Stable Diffusion models:
 - clear down a model: `%sdkit_clear`
 - generate image: `%%sdkit` cell block magic; (this will autoconnect the default model if it is not already connected); see examples below for additional switches.
 
+Models are dowmnloaded to model specific directories on the path `~/.cache/huggingface/hub/`
+
 ### `%%sdkit` image generation
 
 Example of using the `%%sdkit` cell magic:
@@ -175,6 +233,9 @@ Example models:
 
 For a full list, see https://github.com/easydiffusion/sdkit/tree/main/sdkit/models/models_db
 
+## `llava` multimodal (image to text) model
+
+*NOT YET AVAILABLE - waiting in part on https://github.com/abetlen/llama-cpp-python/issues/813*
 ## BUILD and INSTALL
 
 Build as:
