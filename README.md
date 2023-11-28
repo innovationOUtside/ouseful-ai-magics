@@ -124,7 +124,7 @@ requires (via the Hugging face model page) a prompt of the form: `GPT4 User: {{i
 
 Explicitly set the prompt style, being sure to include `{{input}` as part of the prompt, using the `--prompt-template / -p` switch:
 
-`%%llm -p "GPT4 User: {{input}}<|end_of_turn|>GPT4 Assistant:"``
+`%%llm -p "GPT4 User: {{input}}<|end_of_turn|>GPT4 Assistant:"`
 
 Alternatively, some custom prompt styles may be defined, as in this case, and be used by setting the `--prompt-style / -P` flag, for example:
 
