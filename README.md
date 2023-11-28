@@ -205,7 +205,7 @@ Deallocate the model:
 
 ## Image generation
 
-Use the `sdkit` package to generate Stable Diffusion models:
+Use the [`easydiffusion/sdkit`](https://github.com/easydiffusion/sdkit) package to generate Stable Diffusion models:
 
 - download a model: `%sdkit_download_model` (default is *stable-diffusion `v1-5-pruned`*); optional arguments `-t / --type` (e.g. `stable-diffusion` (default)), `-v / --version` (eg `1-5-pruned` (default), `2.1-512-ema-pruned`)
 - connect to a model: `%sdkit_connect`; same options as `sdkit_download_model`; if the model has not been downloaded previously, an attempt will be made to download it;
