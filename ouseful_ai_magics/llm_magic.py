@@ -1,9 +1,17 @@
-from IPython.core.magic import (Magics, magics_class, line_magic,
-                                cell_magic, line_cell_magic)
+from IPython.core.magic import (
+    Magics,
+    magics_class,
+    line_magic,
+    cell_magic,
+    line_cell_magic,
+)
 from IPython.core.magic_arguments import argument, magic_arguments, parse_argstring
 from IPython.display import Markdown
 
 import llm
+
+PROMPT_TYPES = {"starling": "GPT4 User: {input}<|end_of_turn|>GPT4 Assistant:"}
+
 
 @magics_class
 class LLMMagics(Magics):
@@ -32,12 +40,12 @@ class LLMMagics(Magics):
     @line_magic
     def llm_connect(self, line):
         "Set up model connection"
-        self._init_model(line) 
+        self._init_model(line)
 
     @line_magic
     def llm_clear(self, line):
         "Clear down model connection"
-        self.model = None 
+        self.model = None
         self.conversation = None
 
     @line_magic
@@ -56,13 +64,30 @@ class LLMMagics(Magics):
 
     @cell_magic
     @magic_arguments()
-    @argument('--system', '-s', default='', help='System prompt.')
+    @argument("--system", "-s", default="", help="System prompt.")
+    @argument(
+        "--prompt-template",
+        "-p",
+        default="",
+        help="Prompt template, must include {{input}}.",
+    )
+    @argument(
+        "--prompt-type",
+        "-P",
+        default="",
+        help="Prompt style (default is llama2); alternatives: starling",
+    )
     def llm(self, line, cell):
         "Allow model to be defined as part of the call"
         args = parse_argstring(self.llm, line)
-        #display(f"system {args.system}")
+        # display(f"system {args.system}")
         if self.model is None:
             self._init_model()
+
+        if args.prompt_template and "{input}" in args.prompt_template:
+            cell = args.prompt_template.format(input=cell)
+        elif args.prompt_type and args.prompt_type.lower() in PROMPT_TYPES:
+            cell = PROMPT_TYPES[args.prompt_type.lower()].format(input=cell)
         if args.system:
             response = self.model.prompt(cell, system=args.system)
         else:
@@ -71,12 +96,24 @@ class LLMMagics(Magics):
 
     @cell_magic
     @magic_arguments()
-    @argument('--system', '-s', default='', help='System prompt.')
-    @argument('--new', '-n', default=False, help='New conversation.')
+    @argument("--system", "-s", default="", help="System prompt.")
+    @argument("--new", "-n", default=False, help="New conversation.")
+    @argument(
+        "--prompt-template",
+        "-p",
+        default="",
+        help="Prompt template, must include {{input}}.",
+    )
+    @argument(
+        "--prompt-type",
+        "-P",
+        default="",
+        help="Prompt style (default is llama2); alternatives: starling",
+    )
     def llm_conversation(self, line, cell):
         "Have a conversation."
         args = parse_argstring(self.llm_conversation, line)
-        #display(f"system {args.system}")
+        # display(f"system {args.system}")
         if self.model is None:
             self._init_model()
         if self.conversation is None or args.new:
@@ -84,6 +121,12 @@ class LLMMagics(Magics):
             self.conversation = self.model.conversation()
         else:
             print("continuing convo")
+
+        if args.prompt_template and "{input}" in args.prompt_template:
+            cell = args.prompt_template.format(input=cell)
+        elif args.prompt_type and args.prompt_type.lower() in PROMPT_TYPES:
+            cell = PROMPT_TYPES[args.prompt_type.lower()].format(input=cell)
+ 
         if args.system:
             response = self.conversation.prompt(cell, system=args.system)
         else:
@@ -92,20 +135,21 @@ class LLMMagics(Magics):
 
     @cell_magic
     @magic_arguments()
-    @argument('--system', '-s', default='', help='System prompt.')
+    @argument("--system", "-s", default="", help="System prompt.")
     def llm_code(self, line, cell):
         "Allow model to be defined as part of the call"
         args = parse_argstring(self.llm, line)
         if self.model is None:
-            self._init_model() 
-        
+            self._init_model()
+
         if args.system:
             prompt = f"{cell} {self.post_qualify}"
             response = self.model.prompt(prompt)
         else:
             response = self.model.prompt(cell)
         return Markdown(response.text())
-        
+
+
 def load_ipython_extension(ipython):
     magics = LLMMagics(ipython)
     ipython.register_magics(magics)

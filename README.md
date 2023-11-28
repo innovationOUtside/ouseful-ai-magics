@@ -108,6 +108,28 @@ Tell me a funny knock knock joke
 
 This works from a cold start and does not require a model to be explicitly loaded (the default model is automatically loaded if no loaded model is found).
 
+### Alternative prompts
+
+Some models may require custom prompt styles. For example, the statling 7b model, dowmnloaded as: 
+
+```text
+!huggingface-cli download TheBloke/Starling-LM-7B-alpha-GGUF starling-lm-7b-alpha.Q4_K_M.gguf --local-dir ~/.cache/gpt4all --local-dir-use-symlinks False
+
+!llm llama-cpp add-model ~/.cache/gpt4all/starling-lm-7b-alpha.Q4_K_M.gguf --alias starling7b
+
+%llm_connect starling7b
+```
+
+requires (via the Hugging face model page) a prompt of the form: `GPT4 User: {{input}}<|end_of_turn|>GPT4 Assistant:`
+
+Explicitly set the prompt style, being sure to include `{{input}` as part of the prompt, using the `--prompt-template / -p` switch:
+
+`%%llm -p "GPT4 User: {{input}}<|end_of_turn|>GPT4 Assistant:"``
+
+Alternatively, some custom prompt styles may be defined, as in this case, and be used by setting the `--prompt-style / -P` flag, for example:
+
+`%%llm -P starling`
+
 ### System prompts
 
 You can pass in a system prompt (`-s / --system`) which will be applied if the model accepts it:
