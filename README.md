@@ -258,6 +258,24 @@ For a full list, see https://github.com/easydiffusion/sdkit/tree/main/sdkit/mode
 ## `llava` multimodal (image to text) model
 
 *NOT YET AVAILABLE - waiting in part on https://github.com/abetlen/llama-cpp-python/issues/813*
+
+*Magic not yet implemented.*
+
+Currently requires commandline steps:
+
+```bash
+# Download model
+huggingface-cli download mys/ggml_llava-v1.5-7b ggml-model-q5_k.gguf --local-dir ~/.cache/gpt4all --local-dir-use-symlinks False
+
+huggingface-cli download mys/ggml_llava-v1.5-7b mmproj-model-f16.gguf --local-dir ~/.cache/gpt4all --local-dir-use-symlinks False
+```
+
+Then:
+
+`llava -m ggml-model-q5_k.gguf --mmproj mmproj-model-f16.gguf --image path/to/an/image.jpg`
+
+/Users/rlm/Desktop/Code/llama.cpp/bin/llava -m ../models/llava-7b/ggml-model-q5_k.gguf --mmproj ../models/llava-7b/mmproj-model-f16.gguf --temp 0.1 -p "Describe the image in detail. Be specific about graphs, such as bar plots." --image "$img" > "$output_file"
+
 ## BUILD and INSTALL
 
 Build as:
