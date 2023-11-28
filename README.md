@@ -45,7 +45,7 @@ A wide range of additional models can be accessed by installing the appropriate 
 
 The [`llm-llama-cpp`](https://github.com/simonw/llm-llama-cpp) plugin supports models that can be downloaded from HuggingFace.
 
-Install (or update) the plugin with: `llm install -U llm-llama-cpp`. Note there is an additional dependency on`llm install llama-cpp-python` (or on Mac M1/M2: `CMAKE_ARGS="-DLLAMA_METAL=on" FORCE_CMAKE=1 llm install llama-cpp-python`).
+Install (or update) the plugin with: `llm install -U llm-llama-cpp`. Note there is an additional dependency on`llm install -U llama-cpp-python` (or on Mac M1/M2: `CMAKE_ARGS="-DLLAMA_METAL=on" FORCE_CMAKE=1 llm install -U llama-cpp-python`).
 
 Download a model and provide an alis from the command line.
 
