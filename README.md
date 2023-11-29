@@ -182,9 +182,12 @@ Clear a conversation:
 
 *This is WIP en route to seeing if we can get code into a code cell etc.*
 
-The `%%llm_code` cell magic works similarly but adds a sentence to the end of the prompt:
+The `%%llm_code` cell magic will display the full response as output to the magicked cell. It will also attempt to extract any code in the response that is contained in triple backticked code blocks into a newly created code cell following the block magic cell.
 
-`%llm_code R code for factorial`
+```%%llm_code
+R code for factorial
+```
+
 
 ```text
 """
